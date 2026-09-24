@@ -1,0 +1,30 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "websquire-brief",
+  "main": "index.ts",
+  "compatibility_date": "2026-09-01",
+  "account_id": "15c0ed37096745bbf79320d99b111039",
+  "observability": { "enabled": true },
+
+  // Only reachable through the Pages project's service binding.
+  "workers_dev": false,
+  "preview_urls": false,
+
+  // Cloudflare Email Service. web-squire.com must be onboarded for Email Sending.
+  "send_email": [
+    { "name": "EMAIL", "allowed_sender_addresses": ["forms@web-squire.com"] }
+  ],
+
+  // Per-IP cap on submissions so the endpoint can't be used to flood the inbox.
+  "ratelimits": [
+    { "name": "SUBMIT_LIMITER", "namespace_id": "4271", "simple": { "limit": 5, "period": 60 } }
+  ],
+
+  "vars": {
+    "TO_EMAIL": "info@web-squire.com",
+    "FROM_EMAIL": "forms@web-squire.com",
+    // Comma-separated origins allowed to POST from another site (e.g. "https://web-squire.com").
+    // Leave empty when the form is only served by the Pages project.
+    "ALLOWED_ORIGINS": ""
+  }
+}

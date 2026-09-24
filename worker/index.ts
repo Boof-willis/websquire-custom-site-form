@@ -1,5 +1,6 @@
-// Receives website-brief submissions from public/index.html and emails them to TO_EMAIL.
-// Everything except /api/* is served straight from ./public by the assets binding.
+// Receives website-brief submissions and emails them to TO_EMAIL.
+// It has no public URL: the Pages site forwards /api/brief here through a service binding
+// (functions/api/brief.ts), because Pages Functions can't use the send_email or rate-limit bindings.
 
 const MAX_BODY_BYTES = 64 * 1024;
 const MAX_TEXT = 5000;
@@ -34,7 +35,7 @@ interface Brief {
 export default {
   async fetch(request, env): Promise<Response> {
     const url = new URL(request.url);
-    if (url.pathname !== '/api/brief') return env.ASSETS.fetch(request);
+    if (url.pathname !== '/api/brief') return json({ error: 'not_found' }, 404);
 
     const origin = request.headers.get('Origin');
     const cors = corsHeaders(origin, url, env);
