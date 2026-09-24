@@ -7,6 +7,7 @@
 <meta name="color-scheme" content="dark">
 <title>Website Project Brief | Websquire</title>
 <meta name="description" content="Tell Websquire about your business, goals and content so we can plan and build your new website.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0a0b'/%3E%3Cpath d='M5 8h4v11h2V13h2v-2h4v2h2v6h2V8h4v14h-2v2h-5v-2h-1v-2h-2v2h-1v2H9v-2H5z' fill='%23dbcf9b'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -639,8 +640,9 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{border-color:var
 <script>
 (() => {
   // `endpoint` receives the brief as a JSON POST (see buildPayload for the shape) and must answer 2xx.
+  // The Worker in src/index.ts serves this page and handles /api/brief on the same origin.
   const CONFIG = {
-    endpoint: '',
+    endpoint: '/api/brief',
     agencyEmail: 'info@web-squire.com',
     storageKey: 'websquire-brief-v1',
     timeoutMs: 20000
@@ -898,7 +900,14 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{border-color:var
       submission_id: submissionId,
       submitted_at: new Date().toISOString(),
       source_url: /^https?:/.test(location.href) ? location.href : null,
-      answers
+      answers,
+      // question labels grouped by step, so the receiver can present answers the way the client saw them
+      sections: steps.map(step => ({
+        title: step.dataset.summaryTitle || step.dataset.title,
+        fields: $$('[data-label]', step)
+          .map(w => ({ key: $('[name]', w)?.name, label: w.dataset.label }))
+          .filter(f => f.key)
+      })).filter(sec => sec.fields.length)
     };
   }
   async function copyText(text, labelEl, doneLabel) {
@@ -952,6 +961,12 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{border-color:var
         body: JSON.stringify(buildPayload()),
         signal: AbortSignal.timeout?.(CONFIG.timeoutMs)
       });
+      if (res.status === 429) return showSendError('Too many attempts in a short time. Wait a minute, then press Send brief again.');
+      if (res.status === 422) {
+        const { fields: bad = [] } = await res.json().catch(() => ({}));
+        const i = steps.findIndex(st => bad.some(name => st.querySelector(`[name="${name}"]`)));
+        if (i >= 0) { go(i, false); validate(steps[i]); return; }
+      }
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       showDone();
     } catch (err) {

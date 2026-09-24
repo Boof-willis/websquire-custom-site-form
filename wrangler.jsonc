@@ -1,0 +1,33 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "websquire-brief",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-01",
+  "account_id": "9e1e0d2fbc3ee5e5fcd776ef8729d302",
+  "observability": { "enabled": true },
+
+  // The form in public/ is served as static assets; only /api/* runs the Worker.
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"]
+  },
+
+  // Cloudflare Email Service. web-squire.com must be onboarded for Email Sending.
+  "send_email": [
+    { "name": "EMAIL", "allowed_sender_addresses": ["forms@web-squire.com"] }
+  ],
+
+  // Per-IP cap on submissions so the endpoint can't be used to flood the inbox.
+  "ratelimits": [
+    { "name": "SUBMIT_LIMITER", "namespace_id": "4271", "simple": { "limit": 5, "period": 60 } }
+  ],
+
+  "vars": {
+    "TO_EMAIL": "info@web-squire.com",
+    "FROM_EMAIL": "forms@web-squire.com",
+    // Comma-separated origins allowed to POST from another site (e.g. "https://web-squire.com").
+    // Leave empty when the form is only served by this Worker.
+    "ALLOWED_ORIGINS": ""
+  }
+}
