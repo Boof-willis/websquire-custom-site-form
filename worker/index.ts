@@ -1,12 +1,14 @@
-// Receives website-brief submissions and emails them to TO_EMAIL.
-// It has no public URL: the Pages site forwards /api/brief here through a service binding
-// (functions/api/brief.ts), because Pages Functions can't use the send_email or rate-limit bindings.
+// Receives website-brief submissions, validates them and forwards them to the LeadConnector
+// (GoHighLevel) inbound webhook in the WEBHOOK_URL secret. It has no public URL: the Pages site
+// forwards /api/brief here through a service binding (functions/api/brief.ts), because Pages
+// Functions can't use the rate-limit binding. The webhook URL stays server-side.
 
 const MAX_BODY_BYTES = 64 * 1024;
 const MAX_TEXT = 5000;
 const MAX_LIST_ITEMS = 40;
 const MAX_LIST_ITEM = 200;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const WEBHOOK_TIMEOUT_MS = 15000;
 
 // Mirrors the required questions in the form; the server is the real gate.
 const REQUIRED: Record<string, string> = {
@@ -70,30 +72,18 @@ async function handleBrief(request: Request, env: Env, cors: Record<string, stri
   const clientEmail = brief.answers.email as string;
   if (!EMAIL_RE.test(clientEmail)) return json({ error: 'invalid_email', fields: ['email'] }, 422, cors);
 
-  const received = {
-    ...brief,
-    received_at: new Date().toISOString(),
-    country: (request as Request & { cf?: { country?: string } }).cf?.country ?? null
-  };
+  const country = (request as Request & { cf?: { country?: string } }).cf?.country ?? null;
 
   try {
-    await env.EMAIL.send({
-      to: env.TO_EMAIL,
-      from: { email: env.FROM_EMAIL, name: 'Websquire Briefs' },
-      replyTo: { email: clientEmail, name: oneLine(brief.answers.name as string) },
-      subject: oneLine(`New website brief: ${brief.answers.business} (${brief.answers.name})`).slice(0, 200),
-      text: renderText(brief),
-      html: renderHtml(brief),
-      attachments: [{
-        content: JSON.stringify(received, null, 2),
-        filename: `brief-${slug(brief.answers.business as string)}-${received.received_at.slice(0, 10)}.json`,
-        type: 'application/json',
-        disposition: 'attachment'
-      }]
+    const res = await fetch(env.WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(webhookPayload(brief, country)),
+      signal: AbortSignal.timeout(WEBHOOK_TIMEOUT_MS)
     });
+    if (!res.ok) throw new Error(`webhook responded ${res.status}: ${(await res.text()).slice(0, 300)}`);
   } catch (err) {
-    const e = err as { code?: string; message?: string };
-    console.error('brief email failed', { code: e.code, message: e.message, submission_id: brief.submission_id });
+    console.error('brief webhook failed', { message: (err as Error).message, submission_id: brief.submission_id });
     return json({ error: 'send_failed' }, 502, cors);
   }
 
@@ -167,15 +157,14 @@ const str = (v: unknown, max: number) => (typeof v === 'string' ? v.trim().slice
 const hasValue = (v: Answer | undefined) => (Array.isArray(v) ? v.length > 0 : !!v);
 const oneLine = (s: string) => s.replace(/[\r\n]+/g, ' ').trim();
 const humanize = (k: string) => k.replace(/_/g, ' ').replace(/^\w/, c => c.toUpperCase());
-const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'client';
 const display = (v: Answer | undefined) => (Array.isArray(v) ? v.join(', ') : v ?? '');
 
-/* ---------- email rendering ---------- */
+/* ---------- webhook payload ---------- */
 
 function renderText(b: Brief): string {
   const a = b.answers;
   const lines = [
-    `New website brief from ${a.name} at ${a.business}`,
+    `Website brief from ${a.name} at ${a.business}`,
     `Email: ${a.email}${a.phone ? `   Phone: ${a.phone}` : ''}`,
     `Content folder: ${display(a.folder_status)}`,
     ...(a.folder_links ? [`Folder links:\n${a.folder_links}`] : []),
@@ -192,44 +181,32 @@ function renderText(b: Brief): string {
     }
     lines.push('');
   }
-  lines.push('The full JSON payload is attached.');
-  return lines.join('\n');
+  return lines.join('\n').trimEnd();
 }
 
-function renderHtml(b: Brief): string {
+// Flat, string-valued fields map cleanly onto contact and custom fields in a GoHighLevel workflow.
+function webhookPayload(b: Brief, country: string | null) {
   const a = b.answers;
-  const esc = (s: string) => s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
-  const linkify = (s: string) => esc(s).replace(/https?:\/\/[^\s<]+/g, u => `<a href="${u}" style="color:#7a6a2e">${u}</a>`);
-  const value = (v: Answer | undefined) => (Array.isArray(v) ? v.map(esc).join(' &middot; ') : linkify(v ?? '').replace(/\n/g, '<br>'));
-
-  const summary: [string, string][] = [
-    ['Contact', `${esc(String(a.name))}${a.role ? `, ${esc(String(a.role))}` : ''}`],
-    ['Email', `<a href="mailto:${esc(String(a.email))}" style="color:#7a6a2e">${esc(String(a.email))}</a>`],
-    ...(a.phone ? [['Phone', esc(String(a.phone))] as [string, string]] : []),
-    ...(a.contact_pref ? [['Prefers', esc(String(a.contact_pref))] as [string, string]] : []),
-    ['Content folder', value(a.folder_status)],
-    ...(a.folder_links ? [['Folder links', value(a.folder_links)] as [string, string]] : [])
-  ];
-
-  const row = (label: string, html: string) =>
-    `<tr><td style="padding:8px 16px 8px 0;vertical-align:top;color:#6b6b74;font-size:13px;width:180px">${esc(label)}</td>` +
-    `<td style="padding:8px 0;vertical-align:top;font-size:14px;color:#18181b">${html}</td></tr>`;
-
-  const sections = b.sections.map(s => {
-    const rows = s.fields.filter(f => hasValue(a[f.key]));
-    const body = rows.length
-      ? rows.map(f => row(f.label, value(a[f.key]))).join('')
-      : `<tr><td colspan="2" style="padding:8px 0;color:#9a9aa3;font-size:13px">Nothing entered</td></tr>`;
-    return `<h3 style="margin:28px 0 4px;font-size:15px;color:#18181b;border-bottom:1px solid #e4e4e7;padding-bottom:6px">${esc(s.title)}</h3>` +
-      `<table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse">${body}</table>`;
-  }).join('');
-
-  return `<!doctype html><html><body style="margin:0;padding:24px;background:#f4f4f5;font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif">
-<div style="max-width:680px;margin:0 auto;background:#fff;border-radius:10px;padding:28px 32px">
-<p style="margin:0 0 4px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#a1914f">New website brief</p>
-<h2 style="margin:0 0 20px;font-size:22px;color:#18181b">${esc(String(a.business))}</h2>
-<table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;background:#fafaf7;border-radius:8px">${summary.map(([l, h]) => row(l, h)).join('')}</table>
-${sections}
-<p style="margin:28px 0 0;font-size:12px;color:#9a9aa3">Submission ${esc(b.submission_id)}. The full JSON payload is attached. Reply to this email to answer ${esc(String(a.name))} directly.</p>
-</div></body></html>`;
+  const fullName = oneLine(String(a.name ?? ''));
+  const [firstName, ...rest] = fullName.split(/\s+/);
+  const answers: Record<string, string> = {};
+  for (const [k, v] of Object.entries(a)) answers[k] = display(v);
+  return {
+    form: b.form,
+    version: b.version,
+    submission_id: b.submission_id,
+    submitted_at: b.submitted_at,
+    received_at: new Date().toISOString(),
+    source_url: b.source_url,
+    country,
+    first_name: firstName ?? '',
+    last_name: rest.join(' '),
+    full_name: fullName,
+    email: display(a.email),
+    phone: display(a.phone),
+    company_name: display(a.business),
+    website: display(a.current_site),
+    answers,
+    brief_summary: renderText(b)
+  };
 }

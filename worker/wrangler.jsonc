@@ -10,19 +10,16 @@
   "workers_dev": false,
   "preview_urls": false,
 
-  // Cloudflare Email Service. web-squire.com must be onboarded for Email Sending.
-  "send_email": [
-    { "name": "EMAIL", "allowed_sender_addresses": ["forms@web-squire.com"] }
-  ],
-
-  // Per-IP cap on submissions so the endpoint can't be used to flood the inbox.
+  // Per-IP cap on submissions so the endpoint can't be used to flood the CRM.
   "ratelimits": [
     { "name": "SUBMIT_LIMITER", "namespace_id": "4271", "simple": { "limit": 5, "period": 60 } }
   ],
 
+  // WEBHOOK_URL (the LeadConnector inbound webhook) is a secret:
+  //   npx wrangler secret put WEBHOOK_URL -c worker/wrangler.jsonc
+  "secrets": { "required": ["WEBHOOK_URL"] },
+
   "vars": {
-    "TO_EMAIL": "info@web-squire.com",
-    "FROM_EMAIL": "forms@web-squire.com",
     // Comma-separated origins allowed to POST from another site (e.g. "https://web-squire.com").
     // Leave empty when the form is only served by the Pages project.
     "ALLOWED_ORIGINS": ""
