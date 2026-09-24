@@ -1,0 +1,11 @@
+---
+description: How this repository works with Ockno (the site Websquire Custom Site Form)
+alwaysApply: true
+---
+
+Read `AGENTS.md` first. Two hard rules: no `<script>`, inline handlers, `<iframe>`/`<embed>`/`<object>`
+in `pages/*.html` (Ockno's runtime provides behavior through `data-ockno-*` attributes), and keep
+every `<meta name="ockno-page" content="...">` exactly as it is. Forms are `data-ockno-form`
+containers with `data-ockno-field` inputs (at least one of email/phone/a name), a `data-ockno-submit`
+button and an unchecked `data-ockno-consent` checkbox beside any phone field. Ockno posts a check
+on every push; a red check names the file and the fix.

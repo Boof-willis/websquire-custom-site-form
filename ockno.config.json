@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "site": {
+    "name": "Websquire Custom Site Form",
+    "slug": "websquire-custom-site-form",
+    "workspace": "Websquire"
+  },
+  "deploy_target": "renderer",
+  "published": false,
+  "runtime": {
+    "loader": "https://dev-api.ockno.com/api/v1/page-assets/ockno-site.js",
+    "token": null,
+    "script_tag": "Ockno \u2192 Web \u2192 Tracking \u2192 Site tag gives the token for this workspace"
+  },
+  "pages": {
+    "home": {
+      "route": "/",
+      "file": "pages/index.html",
+      "name": "Websquire Custom Site Form \u2014 Home",
+      "published": false,
+      "theme": {}
+    }
+  },
+  "bindings_readonly": {
+    "_comment": "Mirrored from Ockno for reference. Ockno is authoritative; edits here are overwritten and never enforced.",
+    "pixels": [],
+    "tracker": null
+  }
+}
