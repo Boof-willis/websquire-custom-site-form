@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="color-scheme" content="dark">
+<title>Website Project Brief | Websquire</title>
+<meta name="description" content="Tell Websquire about your business, goals and content so we can plan and build your new website.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#000;
+  --surface:#0a0a0b;
+  --surface-2:#111113;
+  --line:rgba(255,255,255,.09);
+  --line-strong:rgba(255,255,255,.2);
+  --text:#f4f4f5;
+  --muted:#a1a1aa;
+  --faint:#6b6b74;
+  --accent:#dbcf9b;
+  --accent-soft:rgba(219,207,155,.1);
+  --danger:#f08a78;
+  --ease:cubic-bezier(.16,1,.3,1);
+  --sans:"Geist",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"Geist Mono",ui-monospace,"SF Mono",Menlo,monospace;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{color-scheme:dark;-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:var(--sans);font-size:16px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0;padding:0}
+::selection{background:var(--accent);color:#000}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+[hidden]{display:none!important}
+.hp{position:absolute;left:-9999px;opacity:0;pointer-events:none}
+
+/* fixed film grain, never on a scrolling layer */
+.grain{
+  position:fixed;inset:0;pointer-events:none;opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ---------- shell ---------- */
+.shell{
+  min-height:100dvh;display:grid;
+  grid-template-columns:minmax(300px,.78fr) 2fr;
+  max-width:1400px;margin:0 auto;
+}
+.rail{
+  position:sticky;top:0;height:100dvh;
+  display:flex;flex-direction:column;gap:40px;
+  padding:40px 40px 32px;border-right:1px solid var(--line);
+}
+.brand{display:inline-block;width:123px;line-height:0}
+.brand svg{display:block;width:100%;height:auto}
+.brand:focus-visible{outline:1px solid var(--accent);outline-offset:6px}
+.rail h1{font-size:30px;line-height:1.08;letter-spacing:-.035em;font-weight:500;margin:0 0 12px}
+.rail .lede{color:var(--muted);font-size:14.5px;margin:0;max-width:34ch}
+
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.steps button{
+  width:100%;display:grid;grid-template-columns:34px 1fr 16px;align-items:center;
+  padding:9px 0;text-align:left;font-size:14.5px;color:var(--faint);
+  transition:color .4s var(--ease),transform .4s var(--ease);
+}
+.steps button .n{font-family:var(--mono);font-size:11.5px;letter-spacing:.04em}
+.steps .status{display:grid;place-items:center;width:16px;height:16px}
+.steps .status > *{grid-area:1/1}
+.steps button svg{opacity:0;transform:scale(.6);transition:opacity .4s var(--ease),transform .4s var(--ease);color:var(--accent)}
+.steps .flag{width:6px;height:6px;background:var(--danger);transform:rotate(45deg) scale(0);transition:transform .4s var(--ease)}
+.steps li.is-missing button{color:var(--muted)}
+.steps li.is-missing .flag{transform:rotate(45deg) scale(1)}
+.steps button:disabled{cursor:default}
+.steps button:not(:disabled):hover{color:var(--text);transform:translateX(3px)}
+.steps li.is-done button{color:var(--muted)}
+.steps li.is-done button svg{opacity:1;transform:none}
+.steps li.is-current button{color:var(--text)}
+.steps li.is-current .n{color:var(--accent)}
+
+.rail-foot{margin-top:auto;display:grid;gap:10px;font-size:13px;color:var(--faint)}
+.rail-foot a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--line-strong)}
+.rail-foot a:hover{color:var(--text)}
+.saved{display:flex;align-items:center;gap:9px}
+.saved .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:breathe 2.8s ease-in-out infinite}
+.saved.is-pulse .dot{animation:ping .7s var(--ease)}
+@keyframes breathe{0%,100%{opacity:.35}50%{opacity:1}}
+@keyframes ping{0%{transform:scale(1)}40%{transform:scale(2.1)}100%{transform:scale(1)}}
+
+/* ---------- stage ---------- */
+.stage{display:flex;flex-direction:column;min-width:0}
+.mobilebar{display:none}
+form{flex:1;padding:72px clamp(24px,7vw,112px) 56px;max-width:860px;width:100%}
+.step{display:none}
+.step.is-active{display:block}
+.step:focus{outline:none}
+.reveal{animation:rise .75s var(--ease) both;animation-delay:calc(var(--i,0)*50ms)}
+form[data-dir="back"] .reveal{animation-name:drop}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes drop{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:none}}
+
+.count{font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--faint);margin:0 0 20px}
+.count b{color:var(--accent);font-weight:500}
+.step h2{font-size:clamp(30px,3.4vw,42px);line-height:1.04;letter-spacing:-.04em;font-weight:500;margin:0 0 14px}
+.step .intro{color:var(--muted);margin:0 0 44px;max-width:58ch}
+
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:28px 24px}
+.grid .wide{grid-column:1/-1}
+.stack{display:grid;gap:28px}
+
+.field,fieldset.field{display:grid;gap:8px;min-width:0;margin:0;padding:0;border:0;align-content:start}
+label,legend{font-size:14px;font-weight:500;color:var(--text);padding:0;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.req{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);font-weight:400}
+.hint{margin:0;font-size:13.5px;color:var(--faint);line-height:1.5}
+legend + .hint{margin-top:-2px}
+.error{margin:0;font-size:13.5px;color:var(--danger);display:flex;gap:8px;align-items:center}
+.error::before{content:"";width:5px;height:5px;background:var(--danger);transform:rotate(45deg);flex:none}
+
+input[type=text],input[type=email],input[type=tel],input[type=date],select,textarea{
+  width:100%;background:var(--surface);border:1px solid var(--line);border-radius:10px;
+  padding:13px 14px;outline:none;appearance:none;
+  transition:border-color .3s var(--ease),background .3s var(--ease),box-shadow .3s var(--ease);
+}
+textarea{min-height:112px;resize:vertical;line-height:1.55}
+select{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23a1a1aa' stroke-width='1.5'%3E%3Cpath d='M2.5 4.5 6 8l3.5-3.5'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 14px center;padding-right:38px;
+}
+::placeholder{color:#55555d}
+input:hover,select:hover,textarea:hover{border-color:var(--line-strong)}
+input:focus-visible,select:focus-visible,textarea:focus-visible{border-color:var(--accent);background:var(--surface-2);box-shadow:inset 0 0 0 1px var(--accent)}
+[aria-invalid="true"]{border-color:var(--danger)!important}
+
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.chip{position:relative;display:inline-flex;font-weight:400}
+.chip input{position:absolute;inset:0;opacity:0;cursor:pointer;margin:0}
+.chip span{
+  display:inline-flex;align-items:center;gap:8px;padding:9px 15px;border-radius:999px;
+  border:1px solid var(--line);color:var(--muted);font-size:14px;line-height:1.2;
+  transition:all .35s var(--ease);
+}
+.chip span::before{content:"";width:0;height:6px;border-radius:50%;background:var(--accent);transition:width .35s var(--ease),margin .35s var(--ease);margin-right:-8px}
+.chip:hover span{border-color:var(--line-strong);color:var(--text)}
+.chip input:checked + span{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.chip input:checked + span::before{width:6px;margin-right:0}
+.chip input:focus-visible + span{box-shadow:inset 0 0 0 1px var(--accent);border-color:var(--accent)}
+.chip:active span{transform:scale(.97)}
+
+/* option rows */
+.options{display:grid;border-top:1px solid var(--line);margin-top:6px}
+.option{position:relative;display:grid;grid-template-columns:22px 1fr;gap:14px;padding:16px 4px;border-bottom:1px solid var(--line);cursor:pointer;font-weight:400;align-items:start;transition:padding .4s var(--ease)}
+.option input{position:absolute;opacity:0}
+.option .radio{width:16px;height:16px;border-radius:50%;border:1px solid var(--line-strong);margin-top:4px;display:grid;place-items:center;transition:border-color .3s var(--ease)}
+.option .radio::after{content:"";width:8px;height:8px;border-radius:50%;background:var(--accent);transform:scale(0);transition:transform .4s var(--ease)}
+.option strong{display:block;font-weight:500;font-size:15.5px}
+.option small{display:block;color:var(--faint);font-size:13.5px}
+.option:hover{padding-left:10px}
+.option:has(input:checked) .radio{border-color:var(--accent)}
+.option:has(input:checked) .radio::after{transform:scale(1)}
+.option:has(input:focus-visible){box-shadow:inset 2px 0 0 var(--accent)}
+
+/* share callout */
+.share{border:1px solid var(--line);border-radius:18px;background:linear-gradient(180deg,var(--surface-2),var(--surface));box-shadow:inset 0 1px 0 rgba(255,255,255,.06);overflow:hidden}
+.share-head{padding:26px 26px 22px;display:grid;gap:14px}
+.share-head h3{margin:0;font-size:19px;letter-spacing:-.02em;font-weight:500}
+.share-head p{margin:0;color:var(--muted);font-size:14.5px;max-width:56ch}
+.copyrow{display:flex;align-items:stretch;border:1px solid var(--line-strong);border-radius:12px;overflow:hidden;width:fit-content;max-width:100%}
+.copyrow code{font-family:var(--mono);font-size:15px;padding:12px 16px;color:var(--accent);overflow-wrap:anywhere}
+.copyrow button{display:inline-flex;align-items:center;gap:8px;padding:0 16px;border-left:1px solid var(--line-strong);font-size:13.5px;color:var(--muted);transition:color .3s var(--ease),background .3s var(--ease)}
+.copyrow button:hover{color:var(--text);background:rgba(255,255,255,.05)}
+.copyrow button:active{transform:scale(.97)}
+.how{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line)}
+.how > div{padding:22px 26px}
+.how > div + div{border-left:1px solid var(--line)}
+.how h4{margin:0 0 10px;font-size:12px;font-family:var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint);font-weight:400}
+.how ol{margin:0;padding:0;list-style:none;counter-reset:s;display:grid;gap:7px;font-size:14px;color:var(--muted)}
+.how li{counter-increment:s;display:grid;grid-template-columns:22px 1fr}
+.how li::before{content:counter(s);font-family:var(--mono);font-size:11.5px;color:var(--faint);padding-top:2px}
+.how li b{color:var(--text);font-weight:500}
+.checklist{list-style:none;margin:6px 0 0;padding:0;columns:2;column-gap:24px;font-size:14px;color:var(--muted)}
+.checklist li{break-inside:avoid;padding:5px 0 5px 22px;position:relative}
+.checklist li::before{content:"";position:absolute;left:2px;top:16px;width:8px;height:1px;background:var(--accent)}
+
+.note{border-left:1px solid var(--accent);padding:2px 0 2px 16px;color:var(--muted);font-size:14px;margin:0}
+.note b{color:var(--text);font-weight:500}
+
+/* review */
+.review{display:grid;gap:0;border-top:1px solid var(--line)}
+.review section{padding:24px 0;border-bottom:1px solid var(--line);display:grid;grid-template-columns:200px 1fr;gap:12px 24px}
+.review header{display:grid;gap:6px;align-content:start}
+.review h3{margin:0;font-size:15px;font-weight:500;letter-spacing:-.01em}
+.review .edit{justify-self:start;font-size:13px;color:var(--faint);border-bottom:1px solid var(--line-strong);transition:color .3s var(--ease)}
+.review .edit:hover{color:var(--accent)}
+.review dl{margin:0;display:grid;gap:12px}
+.review dt{font-size:12.5px;color:var(--faint)}
+.review dd{margin:0;font-size:14.5px;white-space:pre-wrap;overflow-wrap:anywhere}
+.review .empty{color:var(--faint);font-size:14px;margin:0}
+.notes-field{margin-top:36px}
+.review .missing{margin:0;font-size:13px;color:var(--danger);line-height:1.45}
+
+.banner{margin:28px 0 0;border:1px solid rgba(240,138,120,.4);border-radius:12px;padding:16px 18px;font-size:14.5px;color:var(--text);display:grid;gap:12px}
+.banner p{margin:0;color:var(--muted)}
+
+/* nav */
+.nav{
+  position:sticky;bottom:0;background:linear-gradient(180deg,rgba(0,0,0,0),#000 38%);
+  padding:28px clamp(24px,7vw,112px) max(24px,env(safe-area-inset-bottom));
+  display:flex;align-items:center;gap:14px;max-width:860px;width:100%;
+}
+.nav .spacer{flex:1}
+.nav .kbd{font-family:var(--mono);font-size:11.5px;color:var(--faint)}
+.btn{
+  display:inline-flex;align-items:center;gap:10px;padding:13px 22px;border-radius:999px;
+  font-size:15px;font-weight:500;line-height:1;white-space:nowrap;
+  transition:transform .35s var(--ease),background .35s var(--ease),color .35s var(--ease),border-color .35s var(--ease),opacity .3s;
+}
+.btn svg{transition:transform .45s var(--ease)}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--text);color:#000}
+.btn-primary:hover{background:var(--accent)}
+.btn-primary:hover svg{transform:translateX(3px)}
+.btn-ghost{border:1px solid var(--line-strong);color:var(--muted)}
+.btn-ghost:hover{color:var(--text);border-color:var(--text)}
+.btn-ghost:hover svg.l{transform:translateX(-3px)}
+.btn:focus-visible,.steps button:focus-visible,.edit:focus-visible,.copyrow button:focus-visible{outline:1px solid var(--accent);outline-offset:3px}
+.btn[hidden]{display:none}
+.btn.is-loading{pointer-events:none;color:transparent;position:relative;overflow:hidden;background:#2a2a2e}
+.btn.is-loading::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.22) 50%,transparent 70%);transform:translateX(-100%);animation:shimmer 1.2s linear infinite}
+.btn.is-loading::before{content:"Sending brief";position:absolute;inset:0;display:grid;place-items:center;color:var(--muted)}
+@keyframes shimmer{to{transform:translateX(100%)}}
+
+/* done */
+.done{display:none;flex:1;padding:72px clamp(24px,7vw,112px);max-width:860px}
+.done.is-active{display:block}
+.done h2{font-size:clamp(34px,4vw,52px);line-height:1.02;letter-spacing:-.045em;font-weight:500;margin:0 0 18px}
+.done > p{color:var(--muted);max-width:56ch;margin:0 0 36px}
+.next{list-style:none;margin:0 0 40px;padding:0;border-top:1px solid var(--line);counter-reset:n}
+.next li{counter-increment:n;display:grid;grid-template-columns:48px 1fr;padding:18px 0;border-bottom:1px solid var(--line);color:var(--muted);font-size:15px}
+.next li::before{content:"0" counter(n);font-family:var(--mono);font-size:12px;color:var(--accent);padding-top:3px}
+.next li b{color:var(--text);font-weight:500;display:block}
+
+/* ---------- mobile ---------- */
+@media (max-width:900px){
+  .shell{grid-template-columns:1fr}
+  .rail{position:static;height:auto;padding:24px 20px 0;border-right:0;gap:20px}
+  .rail h1{font-size:26px}
+  .steps,.rail-foot{display:none}
+  .mobilebar{display:block;position:sticky;top:0;background:#000;padding:16px 20px 0;z-index:1}
+  .mobilebar p{margin:0 0 12px;font-size:13px;color:var(--muted);display:flex;justify-content:space-between;gap:12px}
+  .mobilebar p span:first-child{font-family:var(--mono);font-size:12px;color:var(--accent)}
+  .track{height:1px;background:var(--line-strong)}
+  .track i{display:block;height:1px;background:var(--accent);transform-origin:left;transform:scaleX(0);transition:transform .8s var(--ease)}
+  form{padding:36px 20px 32px}
+  .count{display:none}
+  .step .intro{margin-bottom:32px}
+  .grid{grid-template-columns:1fr}
+  .how{grid-template-columns:1fr}
+  .how > div + div{border-left:0;border-top:1px solid var(--line)}
+  .checklist{columns:1}
+  .review section{grid-template-columns:1fr}
+  .nav{padding:24px 20px max(20px,env(safe-area-inset-bottom))}
+  .nav .kbd{display:none}
+  .done{padding:40px 20px}
+  .share-head,.how > div{padding-left:20px;padding-right:20px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+
+<div class="shell">
+  <aside class="rail">
+    <a class="brand" href="https://web-squire.com"><svg viewBox="0 0 539.61 71.53" role="img" aria-label="Websquire"><title>Websquire</title><g><g><path fill="#9d9991" fill-rule="evenodd" d="M478.17,30.68V11.13h-5.8v-7.13h-50.46v61.7h18.35v-25.33h20.04v25.33h17.87v-28.53h-5.59v-6.49h5.59ZM440.26,15.82h20.04v12.39h-20.04v-12.39Z"/><rect fill="#9d9991" x="393.52" y="4" width="21.35" height="61.7"/><polygon fill="#9d9991" fill-rule="evenodd" points="386.47 4 386.47 59.44 380.6 59.44 380.6 65.7 337.02 65.7 337.02 59.44 330.44 59.44 330.44 4 349.38 4 349.38 52.72 368.13 52.72 368.13 4 386.47 4"/><path fill="#9d9991" fill-rule="evenodd" d="M323.4,55.38V11.81h-5.82v-7.81h-44.53v7.81h-5.65v47.58h5.64v6.33h33.06v5.81h17.3v-9.96h-6.12v-6.19h6.12ZM286,16.54h18.81v26.22h-11.95v7.19h6.2v3.32h-13.06V16.54Z"/><polygon fill="#9d9991" fill-rule="evenodd" points="242.64 22.36 242.64 16.04 222.54 16.04 222.54 28.83 254.23 28.83 254.23 36.21 260.35 36.21 260.35 59.15 254.47 59.15 254.47 65.7 210.46 65.7 210.46 59.15 204.46 59.15 204.46 46.97 222.31 46.97 222.31 53.29 242.41 53.29 242.41 40.5 210.72 40.5 210.72 33.12 204.46 33.12 204.46 10.53 210.17 10.53 210.17 4 254.71 4 254.71 11.13 260.35 11.13 260.35 22.36 242.64 22.36"/><path fill="#9d9991" fill-rule="evenodd" d="M197.41,30.38V10.58h-5.43v-6.58h-51.06v61.7h51.06v-6.14h5.43v-21.75h-5.43v-7.43h5.43ZM159.65,52.38v-11.64h19.99v11.64h-19.99ZM159.65,16.27h19.99v11.63h-19.99v-11.63Z"/><polygon fill="#9d9991" fill-rule="evenodd" points="98.18 16.13 98.18 28.29 123.46 28.29 123.46 40.93 98.18 40.93 98.18 53.09 133.88 53.09 133.88 65.7 79.61 65.7 79.61 4 133.88 4 133.88 16.13 98.18 16.13"/><polygon fill="#9d9991" fill-rule="evenodd" points="72.56 4 72.56 58.74 67.75 58.74 67.75 65.7 47.6 65.7 47.6 58.74 42.25 58.74 42.25 51.78 38.23 51.78 38.23 43.64 36.34 43.64 36.34 51.78 31.61 51.78 31.61 58.74 27.26 58.74 27.26 65.7 8.48 65.7 8.48 58.74 2 58.74 2 4 19.52 4 19.52 42.92 26.38 42.92 26.38 31.13 31.04 31.13 31.04 23.58 43.13 23.58 43.13 31.13 47.78 31.13 47.78 42.92 54.65 42.92 54.65 4 72.56 4"/></g><polygon fill="#9d9991" fill-rule="evenodd" points="503.91 16.13 503.91 28.29 529.19 28.29 529.19 40.93 503.91 40.93 503.91 53.09 539.61 53.09 539.61 65.7 485.34 65.7 485.34 4 539.61 4 539.61 16.13 503.91 16.13"/></g><g><g><path fill="#dbcf9b" fill-rule="evenodd" d="M419.92,0h50.46v7.13h5.79v19.54h-5.59v6.49h5.59v28.53h-17.87v-25.33h-20.04v25.33h-18.34V0h0ZM438.26,11.82h20.04v12.39h-20.04v-12.39Z"/><polygon fill="#dbcf9b" fill-rule="evenodd" points="391.52 0 412.87 0 412.87 61.7 391.52 61.7 391.52 0"/><polygon fill="#dbcf9b" fill-rule="evenodd" points="328.45 0 347.38 0 347.38 48.72 366.14 48.72 366.14 0 384.48 0 384.48 55.44 378.61 55.44 378.61 61.7 335.03 61.7 335.03 55.44 328.45 55.44 328.45 0"/><path fill="#dbcf9b" fill-rule="evenodd" d="M271.05,0h44.53v7.81h5.81v43.58h-6.11v6.18h6.11v9.97h-17.29v-5.81h-33.06v-6.34h-5.64V7.81h5.65V0h0ZM284.01,12.54h18.81v26.22h-11.95v7.19h6.2v3.32h-13.05V12.54Z"/><polygon fill="#dbcf9b" fill-rule="evenodd" points="208.17 0 252.72 0 252.72 7.13 258.35 7.13 258.35 18.36 240.64 18.36 240.64 12.04 220.55 12.04 220.55 24.83 252.24 24.83 252.24 32.21 258.35 32.21 258.35 55.15 252.47 55.15 252.47 61.7 208.47 61.7 208.47 55.15 202.46 55.15 202.46 42.97 220.32 42.97 220.32 49.29 240.42 49.29 240.42 36.5 208.72 36.5 208.72 29.12 202.46 29.12 202.46 6.53 208.17 6.53 208.17 0"/><path fill="#dbcf9b" fill-rule="evenodd" d="M138.93,0h51.06v6.58h5.43v19.8h-5.43v7.43h5.43v21.75h-5.43v6.14h-51.06V0h0ZM157.65,12.27h19.99v11.63h-19.99v-11.63ZM157.65,36.74h19.99v11.63h-19.99v-11.63h0Z"/><polygon fill="#dbcf9b" fill-rule="evenodd" points="77.61 0 131.88 0 131.88 12.14 96.19 12.14 96.19 24.29 121.46 24.29 121.46 36.93 96.19 36.93 96.19 49.09 131.88 49.09 131.88 61.7 77.61 61.7 77.61 0"/><polygon fill="#dbcf9b" fill-rule="evenodd" points="0 0 17.52 0 17.52 38.92 24.39 38.92 24.39 27.13 29.04 27.13 29.04 19.58 41.13 19.58 41.13 27.13 45.78 27.13 45.78 38.92 52.65 38.92 52.65 0 70.56 0 70.56 54.74 65.76 54.74 65.76 61.7 45.6 61.7 45.6 54.74 40.25 54.74 40.25 47.78 36.24 47.78 36.24 39.64 34.34 39.64 34.34 47.78 29.61 47.78 29.61 54.74 25.26 54.74 25.26 61.7 6.49 61.7 6.49 54.74 0 54.74 0 0"/><polygon fill="#dbcf9b" fill-rule="evenodd" points="483.34 0 537.61 0 537.61 12.14 501.92 12.14 501.92 24.29 527.19 24.29 527.19 36.93 501.92 36.93 501.92 49.09 537.61 49.09 537.61 61.7 483.34 61.7 483.34 0"/></g></g></svg></a>
+    <div>
+      <h1>Website project brief</h1>
+      <p class="lede">About 15 minutes. The more you tell us here, the fewer meetings it takes to get your site right. Skip anything you are unsure of.</p>
+    </div>
+    <ol class="steps" id="steps" aria-label="Brief sections"></ol>
+    <div class="rail-foot">
+      <div class="saved" id="saved" aria-live="polite"><span class="dot" aria-hidden="true"></span><span id="savedText">Answers save on this device as you type</span></div>
+      <div>Stuck on something? <a href="mailto:info@web-squire.com">info@web-squire.com</a></div>
+    </div>
+  </aside>
+
+  <main class="stage">
+    <div class="mobilebar" id="mobilebar">
+      <p><span id="mCount">01 / 09</span><span id="mTitle"></span></p>
+      <div class="track"><i id="mBar"></i></div>
+    </div>
+
+    <form id="brief" novalidate autocomplete="on">
+      <div class="hp" aria-hidden="true"><label>Leave this empty <input type="text" name="company_website_hp" tabindex="-1" autocomplete="off"></label></div>
+
+      <!-- 01 -->
+      <section class="step" data-title="You and your business" tabindex="-1">
+        <h2>Who are we building this for?</h2>
+        <p class="intro">Start with the basics so we know who to talk to and where to find you today.</p>
+        <div class="grid">
+          <div class="field" data-label="Your name">
+            <label for="name">Your name <span class="req">Required</span></label>
+            <input id="name" name="name" type="text" autocomplete="name" required>
+          </div>
+          <div class="field" data-label="Role">
+            <label for="role">Your role</label>
+            <input id="role" name="role" type="text" autocomplete="organization-title" placeholder="Owner, marketing lead, office manager">
+          </div>
+          <div class="field" data-label="Email">
+            <label for="email">Email <span class="req">Required</span></label>
+            <input id="email" name="email" type="email" autocomplete="email" inputmode="email" required>
+          </div>
+          <div class="field" data-label="Phone">
+            <label for="phone">Phone</label>
+            <input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel">
+          </div>
+          <div class="field" data-label="Business name">
+            <label for="business">Business name <span class="req">Required</span></label>
+            <input id="business" name="business" type="text" autocomplete="organization" required>
+          </div>
+          <div class="field" data-label="Industry">
+            <label for="industry">Industry</label>
+            <input id="industry" name="industry" type="text" placeholder="Family dentistry, custom cabinetry, SaaS">
+          </div>
+          <div class="field" data-label="Current website">
+            <label for="current_site">Current website</label>
+            <input id="current_site" name="current_site" type="text" inputmode="url" autocomplete="url" placeholder="yourbusiness.com, or leave blank">
+          </div>
+          <div class="field" data-label="Location and service area">
+            <label for="location">Location and service area</label>
+            <input id="location" name="location" type="text" placeholder="Boise, serving the Treasure Valley">
+          </div>
+          <fieldset class="field wide" data-label="Best way to reach you">
+            <legend>Best way to reach you</legend>
+            <div class="chips" data-type="radio" data-name="contact_pref" data-options="Email|Phone call|Text"></div>
+          </fieldset>
+          <div class="field wide" data-label="Decision makers">
+            <label for="approvers">Who signs off on design and content?</label>
+            <p class="hint">Names and roles. One decision maker keeps a project quick; a committee is fine if we know up front.</p>
+            <textarea id="approvers" name="approvers" style="min-height:76px"></textarea>
+          </div>
+        </div>
+      </section>
+
+      <!-- 02 -->
+      <section class="step" data-title="What you do" tabindex="-1">
+        <h2>Tell us about the business.</h2>
+        <p class="intro">Write it the way you would explain it to a new customer. Plain language beats polished language here.</p>
+        <div class="stack">
+          <div class="field" data-label="What the business does">
+            <label for="about">What does your business do? <span class="req">Required</span></label>
+            <textarea id="about" name="about" required></textarea>
+          </div>
+          <div class="field" data-label="Who it is for">
+            <label for="audience">Who do you do it for? <span class="req">Required</span></label>
+            <p class="hint">Describe your ideal customer: age, role, location, and what they are worried about when they find you.</p>
+            <textarea id="audience" name="audience" required></textarea>
+          </div>
+          <div class="field" data-label="Products and services">
+            <label for="services">Products or services you want featured</label>
+            <p class="hint">List them in order of importance. Mark the ones that make you the most money.</p>
+            <textarea id="services" name="services"></textarea>
+          </div>
+          <div class="field" data-label="Why customers choose you">
+            <label for="difference">Why do customers choose you over someone else?</label>
+            <textarea id="difference" name="difference"></textarea>
+          </div>
+          <div class="field" data-label="Competitors">
+            <label for="competitors">Main competitors</label>
+            <p class="hint">Names or website addresses, one per line.</p>
+            <textarea id="competitors" name="competitors"></textarea>
+          </div>
+        </div>
+      </section>
+
+      <!-- 03 -->
+      <section class="step" data-title="Goals" tabindex="-1">
+        <h2>What should the new site accomplish?</h2>
+        <p class="intro">A website is a tool. Knowing the job it has to do shapes every decision after this.</p>
+        <div class="stack">
+          <fieldset class="field" data-label="Project type" data-required>
+            <legend>What kind of project is this? <span class="req">Required</span></legend>
+            <div class="options">
+              <label class="option"><input type="radio" name="project_type" value="Brand new website"><span class="radio"></span><span><strong>Brand new website</strong><small>We do not have a site yet, or we are starting over from zero.</small></span></label>
+              <label class="option"><input type="radio" name="project_type" value="Redesign of existing site"><span class="radio"></span><span><strong>Redesign of an existing site</strong><small>We have a site. It needs a new look, structure, or platform.</small></span></label>
+              <label class="option"><input type="radio" name="project_type" value="Online store"><span class="radio"></span><span><strong>Online store</strong><small>Selling products, with cart, checkout and inventory.</small></span></label>
+              <label class="option"><input type="radio" name="project_type" value="Landing page or campaign site"><span class="radio"></span><span><strong>Landing page or campaign site</strong><small>One focused page or a small site for an offer, launch, or ad campaign.</small></span></label>
+            </div>
+          </fieldset>
+          <fieldset class="field" data-label="Primary goals">
+            <legend>Primary goals</legend>
+            <p class="hint">Pick everything that applies.</p>
+            <div class="chips" data-name="goals" data-options="Generate leads|Get phone calls|Book appointments|Sell online|Build credibility|Rank higher on Google|Recruit staff|Educate customers|Support existing clients|Showcase work"></div>
+          </fieldset>
+          <div class="field" data-label="Number one visitor action">
+            <label for="primary_action">If a visitor does only one thing, what should it be?</label>
+            <input id="primary_action" name="primary_action" type="text" placeholder="Request a quote, call the office, book a consult">
+          </div>
+          <div class="field" data-label="Problems with current site">
+            <label for="pain">What is not working about your current site or online presence?</label>
+            <textarea id="pain" name="pain"></textarea>
+          </div>
+          <div class="field" data-label="Definition of success">
+            <label for="success">Six months after launch, how will you know this was worth it?</label>
+            <textarea id="success" name="success"></textarea>
+          </div>
+        </div>
+      </section>
+
+      <!-- 04 -->
+      <section class="step" data-title="Brand and style" tabindex="-1">
+        <h2>How should it look and sound?</h2>
+        <p class="intro">You do not need design vocabulary. Examples and gut reactions are exactly what we need.</p>
+        <div class="stack">
+          <fieldset class="field" data-label="Logo status">
+            <legend>Where are you with a logo?</legend>
+            <div class="chips" data-type="radio" data-name="logo_status" data-options="We have one we like|We have one but it needs a refresh|We need a logo"></div>
+          </fieldset>
+          <div class="field" data-label="Brand colors and fonts">
+            <label for="brand_assets">Brand colors, fonts, or guidelines</label>
+            <p class="hint">Hex codes, font names, or simply "see the brand guide in our shared folder".</p>
+            <textarea id="brand_assets" name="brand_assets"></textarea>
+          </div>
+          <fieldset class="field" data-label="Desired tone">
+            <legend>The site should feel</legend>
+            <p class="hint">Choose up to five.</p>
+            <div class="chips" data-name="tone" data-max="5" data-options="Professional|Friendly|Bold|Minimal|Luxurious|Playful|Technical|Warm|Modern|Traditional|Rugged|Calm|Energetic|Trustworthy"></div>
+          </fieldset>
+          <div class="field" data-label="Websites they like">
+            <label for="likes">Websites you like, and what you like about them</label>
+            <p class="hint">Two or three is plenty. They do not have to be in your industry.</p>
+            <textarea id="likes" name="likes"></textarea>
+          </div>
+          <div class="field" data-label="Things to avoid">
+            <label for="dislikes">Anything you know you do not want</label>
+            <p class="hint">Colors, styles, stock photo cliches, a competitor you do not want to resemble.</p>
+            <textarea id="dislikes" name="dislikes"></textarea>
+          </div>
+        </div>
+      </section>
+
+      <!-- 05 -->
+      <section class="step" data-title="Pages and features" tabindex="-1">
+        <h2>What goes on the site?</h2>
+        <p class="intro">A rough list is fine. We will turn this into a proper sitemap together.</p>
+        <div class="stack">
+          <fieldset class="field" data-label="Pages">
+            <legend>Pages you expect to need</legend>
+            <div class="chips" data-name="pages" data-options="Home|About|Services|Individual service pages|Products|Portfolio or case studies|Pricing|Team|Testimonials|Blog or news|FAQ|Careers|Locations|Contact|Privacy and terms"></div>
+          </fieldset>
+          <div class="field" data-label="Other pages">
+            <label for="pages_other">Other pages, or notes on the ones above</label>
+            <textarea id="pages_other" name="pages_other"></textarea>
+          </div>
+          <fieldset class="field" data-label="Features">
+            <legend>Features and functionality</legend>
+            <div class="chips" data-name="features" data-options="Contact or quote forms|Online booking|Online payments|Shopping cart|Customer login|Newsletter signup|Live chat|Photo or video gallery|Reviews feed|Events calendar|Job applications|Map and directions|Multiple languages|Site search|Gated downloads"></div>
+          </fieldset>
+          <div class="field" data-label="Tools to connect">
+            <label for="integrations">Tools the site needs to connect with</label>
+            <p class="hint">CRM, email marketing, scheduling, point of sale, accounting. Name the product if you know it.</p>
+            <textarea id="integrations" name="integrations" placeholder="HubSpot, Mailchimp, Calendly, Square"></textarea>
+          </div>
+          <fieldset class="field" data-label="Who updates the site after launch">
+            <legend>After launch, who will update the site?</legend>
+            <div class="chips" data-type="radio" data-name="updates" data-options="We will, we want to edit it ourselves|Websquire handles it|A mix of both|Not sure yet"></div>
+          </fieldset>
+        </div>
+      </section>
+
+      <!-- 06 -->
+      <section class="step" data-title="Content and files" tabindex="-1">
+        <h2>Share your content with us.</h2>
+        <p class="intro">Content is the single biggest cause of late launches. Putting everything in one shared folder now keeps the project moving.</p>
+        <div class="stack">
+          <div class="share">
+            <div class="share-head">
+              <h3>Add us to your Google Drive or Dropbox folder</h3>
+              <p>Create one folder for this project, drop in whatever you have, and share it with the address below using edit access. Keep adding files as you find them.</p>
+              <div class="copyrow">
+                <code id="agencyEmail">info@web-squire.com</code>
+                <button type="button" id="copyEmail">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5v-2a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2"/></svg>
+                  <span id="copyEmailText">Copy</span>
+                </button>
+              </div>
+            </div>
+            <div class="how">
+              <div>
+                <h4>Google Drive</h4>
+                <ol>
+                  <li><span>Right-click the folder and choose <b>Share</b></span></li>
+                  <li><span>Paste <b>info@web-squire.com</b></span></li>
+                  <li><span>Set the role to <b>Editor</b></span></li>
+                  <li><span>Press <b>Send</b></span></li>
+                </ol>
+              </div>
+              <div>
+                <h4>Dropbox</h4>
+                <ol>
+                  <li><span>Hover the folder and choose <b>Share</b></span></li>
+                  <li><span>Paste <b>info@web-squire.com</b></span></li>
+                  <li><span>Set access to <b>Can edit</b></span></li>
+                  <li><span>Press <b>Share folder</b></span></li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <fieldset class="field" data-label="Folder shared with info@web-squire.com" data-required>
+            <legend>Have you shared the folder? <span class="req">Required</span></legend>
+            <div class="chips" data-type="radio" data-name="folder_status" data-options="Yes, info@web-squire.com has access|Not yet, I will share it this week|I need help getting content together"></div>
+          </fieldset>
+          <div class="field" data-label="Folder links">
+            <label for="folder_links">Folder link</label>
+            <p class="hint">Paste the Google Drive or Dropbox link. One per line if there are several.</p>
+            <textarea id="folder_links" name="folder_links" style="min-height:76px" placeholder="https://drive.google.com/drive/folders/..."></textarea>
+          </div>
+
+          <div class="field">
+            <label id="folderList">What to put in the folder</label>
+            <ul class="checklist" aria-labelledby="folderList">
+              <li>Logo files (SVG, AI, EPS, or large PNG)</li>
+              <li>Brand guide, colors, fonts</li>
+              <li>Photos of your team, work, and location</li>
+              <li>Videos or links to them</li>
+              <li>Written copy, even rough drafts</li>
+              <li>Service or product descriptions and pricing</li>
+              <li>Team names, titles, and bios</li>
+              <li>Testimonials and reviews</li>
+              <li>Certifications, awards, association logos</li>
+              <li>Brochures, menus, PDFs, price sheets</li>
+            </ul>
+          </div>
+
+          <fieldset class="field" data-label="Written content">
+            <legend>Who is writing the words?</legend>
+            <div class="chips" data-type="radio" data-name="copy_source" data-options="We will supply all copy|We have drafts that need polishing|We need Websquire to write it|Reuse what is on our current site"></div>
+          </fieldset>
+          <fieldset class="field" data-label="Photography">
+            <legend>Photography</legend>
+            <div class="chips" data-type="radio" data-name="photo_source" data-options="We have professional photos|We have phone photos|We need a photo shoot|Stock photography is fine"></div>
+          </fieldset>
+        </div>
+      </section>
+
+      <!-- 07 -->
+      <section class="step" data-title="Technical" tabindex="-1">
+        <h2>The behind-the-scenes details.</h2>
+        <p class="intro">Answer what you can. "No idea" is a useful answer and tells us what to track down.</p>
+        <div class="stack">
+          <p class="note"><b>Please do not enter passwords anywhere in this form.</b> We will set up a secure way to hand over logins after we talk.</p>
+          <div class="grid">
+            <div class="field" data-label="Domain name">
+              <label for="domain">Domain name</label>
+              <input id="domain" name="domain" type="text" inputmode="url" placeholder="yourbusiness.com">
+            </div>
+            <div class="field" data-label="Domain registrar">
+              <label for="registrar">Where is the domain registered?</label>
+              <input id="registrar" name="registrar" type="text" placeholder="GoDaddy, Namecheap, Squarespace, not sure">
+            </div>
+            <div class="field" data-label="Current platform">
+              <label for="platform">What is the current site built on?</label>
+              <select id="platform" name="platform">
+                <option value="">Select one</option>
+                <option>No current site</option><option>WordPress</option><option>Squarespace</option><option>Wix</option><option>Shopify</option><option>Webflow</option><option>GoDaddy builder</option><option>Custom built</option><option>Something else</option><option>Not sure</option>
+              </select>
+            </div>
+            <div class="field" data-label="Hosting">
+              <label for="hosting">Who hosts it?</label>
+              <input id="hosting" name="hosting" type="text" placeholder="Company name, or not sure">
+            </div>
+          </div>
+          <fieldset class="field" data-label="Login access they hold">
+            <legend>Which of these can you log in to today?</legend>
+            <div class="chips" data-name="access" data-options="Domain registrar|Hosting account|Current website admin|Google Analytics|Google Search Console|Google Business Profile|Social media accounts|None of these"></div>
+          </fieldset>
+          <fieldset class="field" data-label="Business email">
+            <legend>Business email on your domain</legend>
+            <div class="chips" data-type="radio" data-name="email_setup" data-options="Google Workspace|Microsoft 365|Through our host|We use Gmail or similar|Not sure"></div>
+          </fieldset>
+          <div class="field" data-label="Search and tracking notes">
+            <label for="seo">Search terms you want to be found for, or pages that already rank well</label>
+            <p class="hint">When replacing a site we protect the pages that bring you traffic. Tell us about any you know of.</p>
+            <textarea id="seo" name="seo"></textarea>
+          </div>
+        </div>
+      </section>
+
+      <!-- 08 -->
+      <section class="step" data-title="Review and send" data-summary-title="Final notes" data-review tabindex="-1">
+        <h2>Look it over, then send.</h2>
+        <p class="intro">Here is everything you told us. Edit any section, or send it as is. You can always email us additions later.</p>
+        <div class="review" id="review"></div>
+        <div class="field notes-field" data-label="Anything else">
+          <label for="notes">Anything else we should know?</label>
+          <textarea id="notes" name="notes"></textarea>
+        </div>
+        <div class="banner" id="sendError" role="alert" hidden>
+          <div><strong>That did not go through.</strong><p id="sendErrorText">Your answers are still here. Press Send brief to try again.</p></div>
+        </div>
+      </section>
+    </form>
+
+    <section class="done" id="done" tabindex="-1" aria-live="polite">
+      <p class="count"><b>RECEIVED</b></p>
+      <h2 id="doneTitle">Brief received. Thank you.</h2>
+      <p id="doneLede">We read every answer before we get in touch, so our first conversation can be about your project, not your contact details.</p>
+      <ol class="next">
+        <li id="doneShare"><span><b>Share your content folder</b>Add info@web-squire.com as an editor on your Google Drive or Dropbox folder, if you have not already.</span></li>
+        <li><span><b>We review your brief</b>Expect to hear from us within two business days.</span></li>
+        <li><span><b>Kickoff call</b>We walk through your brief, sitemap, and content plan together.</span></li>
+      </ol>
+    </section>
+
+    <div class="nav" id="nav">
+      <button type="button" class="btn btn-ghost" id="back" hidden>
+        <svg class="l" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M13 8H3M7 4 3 8l4 4"/></svg>
+        Back
+      </button>
+      <span class="spacer"></span>
+      <span class="kbd" id="kbd">Enter to continue</span>
+      <button type="button" class="btn btn-primary" id="next">
+        <span id="nextText">Continue</span>
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+      </button>
+    </div>
+  </main>
+</div>
+
+<script>
+(() => {
+  // `endpoint` receives the brief as a JSON POST (see buildPayload for the shape) and must answer 2xx.
+  const CONFIG = {
+    endpoint: '',
+    agencyEmail: 'info@web-squire.com',
+    storageKey: 'websquire-brief-v1',
+    timeoutMs: 20000
+  };
+
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const form = $('#brief');
+  const steps = $$('.step', form);
+  const total = steps.length;
+  const pad = n => String(n).padStart(2, '0');
+  const CHECK = '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m3.5 8.5 3 3 6-7"/></svg>';
+  let current = 0;
+  const visited = new Set([0]);
+
+  /* ----- build chips from data-options ----- */
+  $$('.chips').forEach(box => {
+    const type = box.dataset.type === 'radio' ? 'radio' : 'checkbox';
+    box.dataset.options.split('|').forEach(opt => {
+      const label = document.createElement('label');
+      label.className = 'chip';
+      const input = document.createElement('input');
+      input.type = type; input.name = box.dataset.name; input.value = opt;
+      const span = document.createElement('span');
+      span.textContent = opt;
+      label.append(input, span);
+      box.append(label);
+    });
+    const max = Number(box.dataset.max);
+    if (max) box.addEventListener('change', e => {
+      if ($$('input:checked', box).length > max) e.target.checked = false;
+    });
+  });
+
+  /* ----- per-step furniture: counter + stagger indexes ----- */
+  steps.forEach((step, i) => {
+    const count = document.createElement('p');
+    count.className = 'count';
+    count.innerHTML = `<b>${pad(i + 1)}</b> / ${pad(total)}`;
+    step.prepend(count);
+    let n = 0;
+    const mark = el => { el.classList.add('reveal'); el.style.setProperty('--i', n++); };
+    [...step.children].forEach(child => {
+      if (child.matches('.grid, .stack')) [...child.children].forEach(g => g.matches('.grid') ? [...g.children].forEach(mark) : mark(g));
+      else mark(child);
+    });
+  });
+
+  /* ----- rail ----- */
+  const rail = $('#steps');
+  steps.forEach((step, i) => {
+    const li = document.createElement('li');
+    li.innerHTML = `<button type="button"><span class="n">${pad(i + 1)}</span><span>${step.dataset.title}</span><span class="status">${CHECK}<i class="flag"></i></span></button>`;
+    li.firstChild.addEventListener('click', () => { if (i !== current) go(i); });
+    rail.append(li);
+  });
+
+  /* ----- persistence ----- */
+  const store = {
+    read() { try { return JSON.parse(localStorage.getItem(CONFIG.storageKey)) || null; } catch { return null; } },
+    write(v) { try { localStorage.setItem(CONFIG.storageKey, JSON.stringify(v)); return true; } catch { return false; } },
+    clear() { try { localStorage.removeItem(CONFIG.storageKey); } catch {} }
+  };
+  const fields = () => $$('input[name], textarea[name], select[name]', form).filter(el => el.name !== 'company_website_hp');
+  function snapshot() {
+    const values = {};
+    fields().forEach(el => {
+      if (el.type === 'checkbox') { (values[el.name] ||= []); if (el.checked) values[el.name].push(el.value); }
+      else if (el.type === 'radio') { if (el.checked) values[el.name] = el.value; }
+      else values[el.name] = el.value;
+    });
+    return values;
+  }
+  function restore(values) {
+    fields().forEach(el => {
+      const v = values[el.name];
+      if (v == null) return;
+      if (el.type === 'checkbox') el.checked = Array.isArray(v) && v.includes(el.value);
+      else if (el.type === 'radio') el.checked = v === el.value;
+      else el.value = v;
+    });
+  }
+  let saveTimer;
+  const saved = $('#saved');
+  function save() {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => {
+      if (!store.write({ values: snapshot(), current, visited: [...visited], submissionId })) return;
+      $('#savedText').textContent = 'Draft saved on this device';
+      saved.classList.remove('is-pulse'); void saved.offsetWidth; saved.classList.add('is-pulse');
+    }, 350);
+  }
+  form.addEventListener('input', save);
+  form.addEventListener('change', save);
+
+  /* ----- validation ----- */
+  function setError(wrap, control, msg) {
+    let err = $('.error', wrap);
+    if (!msg) { err?.remove(); control?.removeAttribute('aria-invalid'); return; }
+    if (!err) { err = document.createElement('p'); err.className = 'error'; err.id = `err-${Math.random().toString(36).slice(2, 8)}`; wrap.append(err); }
+    err.textContent = msg;
+    if (control) { control.setAttribute('aria-invalid', 'true'); control.setAttribute('aria-describedby', err.id); }
+  }
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  function missing(step) {
+    const out = [];
+    $$('[required]', step).forEach(el => {
+      const v = el.value.trim();
+      if (!v || (el.type === 'email' && !EMAIL_RE.test(v))) out.push(el.closest('.field').dataset.label);
+    });
+    $$('fieldset[data-required]', step).forEach(fs => { if (!$('input:checked', fs)) out.push(fs.dataset.label); });
+    return out;
+  }
+  function validate(step) {
+    let first = null;
+    $$('[required]', step).forEach(el => {
+      const wrap = el.closest('.field');
+      let msg = '';
+      if (!el.value.trim()) msg = 'We need this one before you can send.';
+      else if (el.type === 'email' && !EMAIL_RE.test(el.value.trim())) msg = 'That email address does not look complete.';
+      setError(wrap, el, msg);
+      if (msg && !first) first = el;
+    });
+    $$('fieldset[data-required]', step).forEach(fs => {
+      const ok = !!$('input:checked', fs);
+      setError(fs, null, ok ? '' : 'Pick the option that fits best.');
+      if (!ok && !first) first = $('input', fs);
+    });
+    if (first) { first.focus({ preventScroll: true }); first.closest('.field').scrollIntoView({ block: 'center', behavior: 'smooth' }); }
+    return !first;
+  }
+  form.addEventListener('input', e => {
+    const wrap = e.target.closest('.field');
+    if (wrap && $('.error', wrap)) setError(wrap, e.target.matches('[required]') ? e.target : null, '');
+  });
+
+  /* ----- reading answers ----- */
+  function readGroup(wrap) {
+    const inputs = $$('input[name], textarea[name], select[name]', wrap);
+    if (!inputs.length) return '';
+    if (inputs[0].type === 'checkbox' || inputs[0].type === 'radio') return inputs.filter(i => i.checked).map(i => i.value).join(', ');
+    return inputs[0].value.trim();
+  }
+  function collect() {
+    return steps.map((step, i) => ({
+      index: i,
+      title: step.dataset.summaryTitle || step.dataset.title,
+      rows: $$('[data-label]', step).map(w => [w.dataset.label, readGroup(w)]).filter(([, v]) => v)
+    }));
+  }
+  function renderReview() {
+    const box = $('#review');
+    box.textContent = '';
+    collect().filter(sec => !('review' in steps[sec.index].dataset)).forEach(sec => {
+      const el = document.createElement('section');
+      const head = document.createElement('header');
+      const h = document.createElement('h3'); h.textContent = sec.title;
+      const edit = document.createElement('button');
+      edit.type = 'button'; edit.className = 'edit'; edit.textContent = 'Edit';
+      edit.setAttribute('aria-label', `Edit ${sec.title}`);
+      edit.addEventListener('click', () => go(sec.index));
+      head.append(h);
+      const gaps = missing(steps[sec.index]);
+      if (gaps.length) {
+        const m = document.createElement('p'); m.className = 'missing'; m.textContent = `Missing: ${gaps.join(', ')}`;
+        head.append(m);
+      }
+      head.append(edit);
+      el.append(head);
+      if (sec.rows.length) {
+        const dl = document.createElement('dl');
+        sec.rows.forEach(([k, val]) => {
+          const row = document.createElement('div');
+          const dt = document.createElement('dt'); dt.textContent = k;
+          const dd = document.createElement('dd'); dd.textContent = val;
+          row.append(dt, dd); dl.append(row);
+        });
+        el.append(dl);
+      } else {
+        const p = document.createElement('p'); p.className = 'empty'; p.textContent = 'Nothing added here yet. That is fine, or tap Edit to fill it in.';
+        el.append(p);
+      }
+      box.append(el);
+    });
+  }
+
+  /* ----- navigation ----- */
+  const nextBtn = $('#next'), backBtn = $('#back');
+  function paintRail() {
+    $$('li', rail).forEach((li, i) => {
+      const seen = visited.has(i) && i !== current && i !== total - 1;
+      const gaps = seen && missing(steps[i]).length > 0;
+      li.classList.toggle('is-current', i === current);
+      li.classList.toggle('is-done', seen && !gaps);
+      li.classList.toggle('is-missing', gaps);
+      li.firstChild.title = gaps ? 'Required answers missing' : '';
+    });
+  }
+  form.addEventListener('input', paintRail);
+  form.addEventListener('change', paintRail);
+  function paint() {
+    steps.forEach((s, i) => s.classList.toggle('is-active', i === current));
+    paintRail();
+    $$('li', rail).forEach((li, i) => {
+      if (i === current) li.firstChild.setAttribute('aria-current', 'step'); else li.firstChild.removeAttribute('aria-current');
+    });
+    const last = current === total - 1;
+    backBtn.hidden = current === 0;
+    $('#nextText').textContent = last ? 'Send brief' : 'Continue';
+    $('#kbd').hidden = last;
+    $('#mCount').textContent = `${pad(current + 1)} / ${pad(total)}`;
+    $('#mTitle').textContent = steps[current].dataset.title;
+    $('#mBar').style.transform = `scaleX(${(current + 1) / total})`;
+    if (last) renderReview();
+  }
+  function go(i, focus = true) {
+    form.dataset.dir = i < current ? 'back' : 'fwd';
+    current = i;
+    visited.add(i);
+    $('#sendError').hidden = true;
+    paint();
+    save();
+    if (focus) { window.scrollTo({ top: 0 }); steps[current].focus({ preventScroll: true }); }
+  }
+  nextBtn.addEventListener('click', () => {
+    if (current === total - 1) return submit();
+    go(current + 1);
+  });
+  backBtn.addEventListener('click', () => go(current - 1));
+  form.addEventListener('submit', e => e.preventDefault());
+  form.addEventListener('keydown', e => {
+    if (e.key !== 'Enter' || e.isComposing) return;
+    const t = e.target;
+    if (t.tagName === 'TEXTAREA' && !(e.metaKey || e.ctrlKey)) return;
+    if (t.tagName === 'BUTTON') return;
+    e.preventDefault();
+    nextBtn.click();
+  });
+
+  /* ----- sending ----- */
+  const newId = () => crypto.randomUUID?.() ?? `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 12)}`;
+  // one id per brief, kept with the draft, so a retry after a dropped response is recognisable as the same submission
+  let submissionId = newId();
+  function buildPayload() {
+    // every question is present on every submission: multi-selects as arrays, everything else a string or null
+    const values = snapshot();
+    const answers = {};
+    fields().forEach(({ name }) => {
+      const v = values[name];
+      answers[name] = Array.isArray(v) ? v : (v?.trim() || null);
+    });
+    return {
+      form: 'website-brief',
+      version: 1,
+      submission_id: submissionId,
+      submitted_at: new Date().toISOString(),
+      source_url: /^https?:/.test(location.href) ? location.href : null,
+      answers
+    };
+  }
+  async function copyText(text, labelEl, doneLabel) {
+    const original = labelEl.textContent;
+    try { await navigator.clipboard.writeText(text); }
+    catch {
+      const ta = Object.assign(document.createElement('textarea'), { value: text });
+      ta.style.cssText = 'position:fixed;opacity:0'; document.body.append(ta); ta.select();
+      try { document.execCommand('copy'); } catch {}
+      ta.remove();
+    }
+    labelEl.textContent = doneLabel;
+    setTimeout(() => { labelEl.textContent = original; }, 1800);
+  }
+  $('#copyEmail').addEventListener('click', () => copyText(CONFIG.agencyEmail, $('#copyEmailText'), 'Copied'));
+
+  function showDone() {
+    const v = snapshot();
+    form.hidden = true; $('#nav').hidden = true; $('#mobilebar').hidden = true;
+    $$('li', rail).forEach(li => { li.className = 'is-done'; li.firstChild.disabled = true; li.firstChild.title = ''; });
+    const first = (v.name || '').trim().split(/\s+/)[0];
+    if (first) $('#doneTitle').textContent = `Brief received. Thank you, ${first}.`;
+    if ((v.folder_status || '').startsWith('Yes')) $('#doneShare').remove();
+    store.clear();
+    const done = $('#done');
+    done.classList.add('is-active');
+    window.scrollTo({ top: 0 });
+    done.focus({ preventScroll: true });
+  }
+  function showSendError(text) {
+    $('#sendErrorText').textContent = text;
+    $('#sendError').hidden = false;
+    $('#sendError').scrollIntoView({ block: 'center', behavior: 'smooth' });
+  }
+  async function submit() {
+    for (let i = 0; i < total - 1; i++) visited.add(i);
+    for (let i = 0; i < total - 1; i++) {
+      if (!validate(steps[i])) { go(i, false); validate(steps[i]); return; }
+    }
+    if (form.elements.company_website_hp.value) return showDone();
+    if (!CONFIG.endpoint) {
+      console.error('Brief not sent: CONFIG.endpoint is empty. Payload that would have been sent:', buildPayload());
+      return showSendError('Submissions are not switched on yet. Your answers are still here.');
+    }
+    nextBtn.classList.add('is-loading'); nextBtn.setAttribute('aria-busy', 'true');
+    $('#sendError').hidden = true;
+    try {
+      const res = await fetch(CONFIG.endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify(buildPayload()),
+        signal: AbortSignal.timeout?.(CONFIG.timeoutMs)
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      showDone();
+    } catch (err) {
+      console.error('Brief submission failed', err);
+      showSendError('Your answers are still here. Check your connection and press Send brief to try again.');
+    } finally {
+      nextBtn.classList.remove('is-loading'); nextBtn.removeAttribute('aria-busy');
+    }
+  }
+
+  /* ----- boot ----- */
+  const draft = store.read();
+  if (draft?.values) {
+    restore(draft.values);
+    current = Math.min(draft.current || 0, total - 1);
+    (draft.visited || []).forEach(i => i < total && visited.add(i));
+    visited.add(current);
+    if (draft.submissionId) submissionId = draft.submissionId;
+    $('#savedText').textContent = 'Picked up where you left off';
+  }
+  paint();
+})();
+</script>
+</body>
+</html>
