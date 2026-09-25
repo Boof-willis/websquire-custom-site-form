@@ -4,7 +4,6 @@
   "type": "module",
   "scripts": {
     "dev": "wrangler dev -c worker/wrangler.jsonc --port 8788 & wrangler pages dev",
-    "deploy:worker": "wrangler deploy -c worker/wrangler.jsonc",
     "types": "wrangler types && wrangler types -c worker/wrangler.jsonc worker/worker-configuration.d.ts",
     "typecheck": "npm run types && tsc --noEmit -p worker && tsc --noEmit -p functions"
   },
