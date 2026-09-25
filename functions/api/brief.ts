@@ -1,4 +1,4 @@
-// Hands form submissions to the websquire-brief Worker, which validates them and sends the email.
-interface Env { BRIEF: Fetcher }
-
-export const onRequest: PagesFunction<Env> = ({ request, env }) => env.BRIEF.fetch(request);
+// Retired: Ockno's site tag now captures this form directly; nothing calls this route.
+// Safe to delete this file (and the `worker/` Worker + its WEBHOOK_URL secret) once you've
+// confirmed leads are landing in Ockno.
+export const onRequest: PagesFunction = () => new Response('Gone', { status: 410 });
