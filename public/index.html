@@ -299,7 +299,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{border-color:var
       <div class="track"><i id="mBar"></i></div>
     </div>
 
-    <form id="brief" novalidate autocomplete="on">
+    <form id="brief" novalidate autocomplete="on" data-ockno-form="observe">
       <div class="hp" aria-hidden="true"><label>Leave this empty <input type="text" name="company_website_hp" tabindex="-1" autocomplete="off"></label></div>
 
       <!-- 01 -->
@@ -309,44 +309,44 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{border-color:var
         <div class="grid">
           <div class="field" data-label="Your name">
             <label for="name">Your name <span class="req">Required</span></label>
-            <input id="name" name="name" type="text" autocomplete="name" required>
+            <input id="name" name="name" type="text" autocomplete="name" required data-ockno-field="full_name">
           </div>
           <div class="field" data-label="Role">
             <label for="role">Your role</label>
-            <input id="role" name="role" type="text" autocomplete="organization-title" placeholder="Owner, marketing lead, office manager">
+            <input id="role" name="role" type="text" autocomplete="organization-title" placeholder="Owner, marketing lead, office manager" data-ockno-field="custom:role">
           </div>
           <div class="field" data-label="Email">
             <label for="email">Email <span class="req">Required</span></label>
-            <input id="email" name="email" type="email" autocomplete="email" inputmode="email" required>
+            <input id="email" name="email" type="email" autocomplete="email" inputmode="email" required data-ockno-field="email">
           </div>
           <div class="field" data-label="Phone">
             <label for="phone">Phone</label>
-            <input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel">
+            <input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" data-ockno-field="phone">
           </div>
           <div class="field" data-label="Business name">
             <label for="business">Business name <span class="req">Required</span></label>
-            <input id="business" name="business" type="text" autocomplete="organization" required>
+            <input id="business" name="business" type="text" autocomplete="organization" required data-ockno-field="company">
           </div>
           <div class="field" data-label="Industry">
             <label for="industry">Industry</label>
-            <input id="industry" name="industry" type="text" placeholder="Family dentistry, custom cabinetry, SaaS">
+            <input id="industry" name="industry" type="text" placeholder="Family dentistry, custom cabinetry, SaaS" data-ockno-field="custom:industry">
           </div>
           <div class="field" data-label="Current website">
             <label for="current_site">Current website</label>
-            <input id="current_site" name="current_site" type="text" inputmode="url" autocomplete="url" placeholder="yourbusiness.com, or leave blank">
+            <input id="current_site" name="current_site" type="text" inputmode="url" autocomplete="url" placeholder="yourbusiness.com, or leave blank" data-ockno-field="website">
           </div>
           <div class="field" data-label="Location and service area">
             <label for="location">Location and service area</label>
-            <input id="location" name="location" type="text" placeholder="Boise, serving the Treasure Valley">
+            <input id="location" name="location" type="text" placeholder="Boise, serving the Treasure Valley" data-ockno-field="custom:location">
           </div>
           <fieldset class="field wide" data-label="Best way to reach you">
             <legend>Best way to reach you</legend>
-            <div class="chips" data-type="radio" data-name="contact_pref" data-options="Email|Phone call|Text"></div>
+            <div class="chips" data-type="radio" data-name="contact_pref" data-options="Email|Phone call|Text" data-ockno-field="custom:contact_pref"></div>
           </fieldset>
           <div class="field wide" data-label="Decision makers">
             <label for="approvers">Who signs off on design and content?</label>
             <p class="hint">Names and roles. One decision maker keeps a project quick; a committee is fine if we know up front.</p>
-            <textarea id="approvers" name="approvers" style="min-height:76px"></textarea>
+            <textarea id="approvers" name="approvers" style="min-height:76px" data-ockno-field="opportunity:approvers"></textarea>
           </div>
         </div>
       </section>
@@ -358,26 +358,26 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{border-color:var
         <div class="stack">
           <div class="field" data-label="What the business does">
             <label for="about">What does your business do? <span class="req">Required</span></label>
-            <textarea id="about" name="about" required></textarea>
+            <textarea id="about" name="about" required data-ockno-field="opportunity:about_business"></textarea>
           </div>
           <div class="field" data-label="Who it is for">
             <label for="audience">Who do you do it for? <span class="req">Required</span></label>
             <p class="hint">Describe your ideal customer: age, role, location, and what they are worried about when they find you.</p>
-            <textarea id="audience" name="audience" required></textarea>
+            <textarea id="audience" name="audience" required data-ockno-field="opportunity:audience"></textarea>
           </div>
           <div class="field" data-label="Products and services">
             <label for="services">Products or services you want featured</label>
             <p class="hint">List them in order of importance. Mark the ones that make you the most money.</p>
-            <textarea id="services" name="services"></textarea>
+            <textarea id="services" name="services" data-ockno-field="opportunity:services"></textarea>
           </div>
           <div class="field" data-label="Why customers choose you">
             <label for="difference">Why do customers choose you over someone else?</label>
-            <textarea id="difference" name="difference"></textarea>
+            <textarea id="difference" name="difference" data-ockno-field="opportunity:differentiation"></textarea>
           </div>
           <div class="field" data-label="Competitors">
             <label for="competitors">Main competitors</label>
             <p class="hint">Names or website addresses, one per line.</p>
-            <textarea id="competitors" name="competitors"></textarea>
+            <textarea id="competitors" name="competitors" data-ockno-field="opportunity:competitors"></textarea>
           </div>
         </div>
       </section>
@@ -390,28 +390,28 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{border-color:var
           <fieldset class="field" data-label="Project type" data-required>
             <legend>What kind of project is this? <span class="req">Required</span></legend>
             <div class="options">
-              <label class="option"><input type="radio" name="project_type" value="Brand new website"><span class="radio"></span><span><strong>Brand new website</strong><small>We do not have a site yet, or we are starting over from zero.</small></span></label>
-              <label class="option"><input type="radio" name="project_type" value="Redesign of existing site"><span class="radio"></span><span><strong>Redesign of an existing site</strong><small>We have a site. It needs a new look, structure, or platform.</small></span></label>
-              <label class="option"><input type="radio" name="project_type" value="Online store"><span class="radio"></span><span><strong>Online store</strong><small>Selling products, with cart, checkout and inventory.</small></span></label>
-              <label class="option"><input type="radio" name="project_type" value="Landing page or campaign site"><span class="radio"></span><span><strong>Landing page or campaign site</strong><small>One focused page or a small site for an offer, launch, or ad campaign.</small></span></label>
+              <label class="option"><input type="radio" name="project_type" value="Brand new website" data-ockno-field="opportunity:project_type"><span class="radio"></span><span><strong>Brand new website</strong><small>We do not have a site yet, or we are starting over from zero.</small></span></label>
+              <label class="option"><input type="radio" name="project_type" value="Redesign of existing site" data-ockno-field="opportunity:project_type"><span class="radio"></span><span><strong>Redesign of an existing site</strong><small>We have a site. It needs a new look, structure, or platform.</small></span></label>
+              <label class="option"><input type="radio" name="project_type" value="Online store" data-ockno-field="opportunity:project_type"><span class="radio"></span><span><strong>Online store</strong><small>Selling products, with cart, checkout and inventory.</small></span></label>
+              <label class="option"><input type="radio" name="project_type" value="Landing page or campaign site" data-ockno-field="opportunity:project_type"><span class="radio"></span><span><strong>Landing page or campaign site</strong><small>One focused page or a small site for an offer, launch, or ad campaign.</small></span></label>
             </div>
           </fieldset>
           <fieldset class="field" data-label="Primary goals">
             <legend>Primary goals</legend>
             <p class="hint">Pick everything that applies.</p>
-            <div class="chips" data-name="goals" data-options="Generate leads|Get phone calls|Book appointments|Sell online|Build credibility|Rank higher on Google|Recruit staff|Educate customers|Support existing clients|Showcase work"></div>
+            <div class="chips" data-name="goals" data-options="Generate leads|Get phone calls|Book appointments|Sell online|Build credibility|Rank higher on Google|Recruit staff|Educate customers|Support existing clients|Showcase work" data-ockno-field="opportunity:goals"></div>
           </fieldset>
           <div class="field" data-label="Number one visitor action">
             <label for="primary_action">If a visitor does only one thing, what should it be?</label>
-            <input id="primary_action" name="primary_action" type="text" placeholder="Request a quote, call the office, book a consult">
+            <input id="primary_action" name="primary_action" type="text" placeholder="Request a quote, call the office, book a consult" data-ockno-field="opportunity:primary_action">
           </div>
           <div class="field" data-label="Problems with current site">
             <label for="pain">What is not working about your current site or online presence?</label>
-            <textarea id="pain" name="pain"></textarea>
+            <textarea id="pain" name="pain" data-ockno-field="opportunity:pain_points"></textarea>
           </div>
           <div class="field" data-label="Definition of success">
             <label for="success">Six months after launch, how will you know this was worth it?</label>
-            <textarea id="success" name="success"></textarea>
+            <textarea id="success" name="success" data-ockno-field="opportunity:success_criteria"></textarea>
           </div>
         </div>
       </section>
@@ -423,27 +423,27 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{border-color:var
         <div class="stack">
           <fieldset class="field" data-label="Logo status">
             <legend>Where are you with a logo?</legend>
-            <div class="chips" data-type="radio" data-name="logo_status" data-options="We have one we like|We have one but it needs a refresh|We need a logo"></div>
+            <div class="chips" data-type="radio" data-name="logo_status" data-options="We have one we like|We have one but it needs a refresh|We need a logo" data-ockno-field="opportunity:logo_status"></div>
           </fieldset>
           <div class="field" data-label="Brand colors and fonts">
             <label for="brand_assets">Brand colors, fonts, or guidelines</label>
             <p class="hint">Hex codes, font names, or simply "see the brand guide in our shared folder".</p>
-            <textarea id="brand_assets" name="brand_assets"></textarea>
+            <textarea id="brand_assets" name="brand_assets" data-ockno-field="opportunity:brand_assets"></textarea>
           </div>
           <fieldset class="field" data-label="Desired tone">
             <legend>The site should feel</legend>
             <p class="hint">Choose up to five.</p>
-            <div class="chips" data-name="tone" data-max="5" data-options="Professional|Friendly|Bold|Minimal|Luxurious|Playful|Technical|Warm|Modern|Traditional|Rugged|Calm|Energetic|Trustworthy"></div>
+            <div class="chips" data-name="tone" data-max="5" data-options="Professional|Friendly|Bold|Minimal|Luxurious|Playful|Technical|Warm|Modern|Traditional|Rugged|Calm|Energetic|Trustworthy" data-ockno-field="opportunity:tone"></div>
           </fieldset>
           <div class="field" data-label="Websites they like">
             <label for="likes">Websites you like, and what you like about them</label>
             <p class="hint">Two or three is plenty. They do not have to be in your industry.</p>
-            <textarea id="likes" name="likes"></textarea>
+            <textarea id="likes" name="likes" data-ockno-field="opportunity:sites_liked"></textarea>
           </div>
           <div class="field" data-label="Things to avoid">
             <label for="dislikes">Anything you know you do not want</label>
             <p class="hint">Colors, styles, stock photo cliches, a competitor you do not want to resemble.</p>
-            <textarea id="dislikes" name="dislikes"></textarea>
+            <textarea id="dislikes" name="dislikes" data-ockno-field="opportunity:sites_disliked"></textarea>
           </div>
         </div>
       </section>
@@ -455,24 +455,24 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{border-color:var
         <div class="stack">
           <fieldset class="field" data-label="Pages">
             <legend>Pages you expect to need</legend>
-            <div class="chips" data-name="pages" data-options="Home|About|Services|Individual service pages|Products|Portfolio or case studies|Pricing|Team|Testimonials|Blog or news|FAQ|Careers|Locations|Contact|Privacy and terms"></div>
+            <div class="chips" data-name="pages" data-options="Home|About|Services|Individual service pages|Products|Portfolio or case studies|Pricing|Team|Testimonials|Blog or news|FAQ|Careers|Locations|Contact|Privacy and terms" data-ockno-field="opportunity:pages"></div>
           </fieldset>
           <div class="field" data-label="Other pages">
             <label for="pages_other">Other pages, or notes on the ones above</label>
-            <textarea id="pages_other" name="pages_other"></textarea>
+            <textarea id="pages_other" name="pages_other" data-ockno-field="opportunity:pages_other"></textarea>
           </div>
           <fieldset class="field" data-label="Features">
             <legend>Features and functionality</legend>
-            <div class="chips" data-name="features" data-options="Contact or quote forms|Online booking|Online payments|Shopping cart|Customer login|Newsletter signup|Live chat|Photo or video gallery|Reviews feed|Events calendar|Job applications|Map and directions|Multiple languages|Site search|Gated downloads"></div>
+            <div class="chips" data-name="features" data-options="Contact or quote forms|Online booking|Online payments|Shopping cart|Customer login|Newsletter signup|Live chat|Photo or video gallery|Reviews feed|Events calendar|Job applications|Map and directions|Multiple languages|Site search|Gated downloads" data-ockno-field="opportunity:features"></div>
           </fieldset>
           <div class="field" data-label="Tools to connect">
             <label for="integrations">Tools the site needs to connect with</label>
             <p class="hint">CRM, email marketing, scheduling, point of sale, accounting. Name the product if you know it.</p>
-            <textarea id="integrations" name="integrations" placeholder="HubSpot, Mailchimp, Calendly, Square"></textarea>
+            <textarea id="integrations" name="integrations" placeholder="HubSpot, Mailchimp, Calendly, Square" data-ockno-field="opportunity:integrations"></textarea>
           </div>
           <fieldset class="field" data-label="Who updates the site after launch">
             <legend>After launch, who will update the site?</legend>
-            <div class="chips" data-type="radio" data-name="updates" data-options="We will, we want to edit it ourselves|Websquire handles it|A mix of both|Not sure yet"></div>
+            <div class="chips" data-type="radio" data-name="updates" data-options="We will, we want to edit it ourselves|Websquire handles it|A mix of both|Not sure yet" data-ockno-field="opportunity:site_updates_owner"></div>
           </fieldset>
         </div>
       </section>
@@ -518,12 +518,12 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{border-color:var
 
           <fieldset class="field" data-label="Folder shared with info@web-squire.com" data-required>
             <legend>Have you shared the folder? <span class="req">Required</span></legend>
-            <div class="chips" data-type="radio" data-name="folder_status" data-options="Yes, info@web-squire.com has access|Not yet, I will share it this week|I need help getting content together"></div>
+            <div class="chips" data-type="radio" data-name="folder_status" data-options="Yes, info@web-squire.com has access|Not yet, I will share it this week|I need help getting content together" data-ockno-field="opportunity:folder_status"></div>
           </fieldset>
           <div class="field" data-label="Folder links">
             <label for="folder_links">Folder link</label>
             <p class="hint">Paste the Google Drive or Dropbox link. One per line if there are several.</p>
-            <textarea id="folder_links" name="folder_links" style="min-height:76px" placeholder="https://drive.google.com/drive/folders/..."></textarea>
+            <textarea id="folder_links" name="folder_links" style="min-height:76px" placeholder="https://drive.google.com/drive/folders/..." data-ockno-field="opportunity:folder_links"></textarea>
           </div>
 
           <div class="field">
@@ -544,11 +544,11 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{border-color:var
 
           <fieldset class="field" data-label="Written content">
             <legend>Who is writing the words?</legend>
-            <div class="chips" data-type="radio" data-name="copy_source" data-options="We will supply all copy|We have drafts that need polishing|We need Websquire to write it|Reuse what is on our current site"></div>
+            <div class="chips" data-type="radio" data-name="copy_source" data-options="We will supply all copy|We have drafts that need polishing|We need Websquire to write it|Reuse what is on our current site" data-ockno-field="opportunity:copy_source"></div>
           </fieldset>
           <fieldset class="field" data-label="Photography">
             <legend>Photography</legend>
-            <div class="chips" data-type="radio" data-name="photo_source" data-options="We have professional photos|We have phone photos|We need a photo shoot|Stock photography is fine"></div>
+            <div class="chips" data-type="radio" data-name="photo_source" data-options="We have professional photos|We have phone photos|We need a photo shoot|Stock photography is fine" data-ockno-field="opportunity:photo_source"></div>
           </fieldset>
         </div>
       </section>
@@ -562,36 +562,36 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{border-color:var
           <div class="grid">
             <div class="field" data-label="Domain name">
               <label for="domain">Domain name</label>
-              <input id="domain" name="domain" type="text" inputmode="url" placeholder="yourbusiness.com">
+              <input id="domain" name="domain" type="text" inputmode="url" placeholder="yourbusiness.com" data-ockno-field="opportunity:domain">
             </div>
             <div class="field" data-label="Domain registrar">
               <label for="registrar">Where is the domain registered?</label>
-              <input id="registrar" name="registrar" type="text" placeholder="GoDaddy, Namecheap, Squarespace, not sure">
+              <input id="registrar" name="registrar" type="text" placeholder="GoDaddy, Namecheap, Squarespace, not sure" data-ockno-field="opportunity:registrar">
             </div>
             <div class="field" data-label="Current platform">
               <label for="platform">What is the current site built on?</label>
-              <select id="platform" name="platform">
+              <select id="platform" name="platform" data-ockno-field="opportunity:current_platform">
                 <option value="">Select one</option>
                 <option>No current site</option><option>WordPress</option><option>Squarespace</option><option>Wix</option><option>Shopify</option><option>Webflow</option><option>GoDaddy builder</option><option>Custom built</option><option>Something else</option><option>Not sure</option>
               </select>
             </div>
             <div class="field" data-label="Hosting">
               <label for="hosting">Who hosts it?</label>
-              <input id="hosting" name="hosting" type="text" placeholder="Company name, or not sure">
+              <input id="hosting" name="hosting" type="text" placeholder="Company name, or not sure" data-ockno-field="opportunity:hosting">
             </div>
           </div>
           <fieldset class="field" data-label="Login access they hold">
             <legend>Which of these can you log in to today?</legend>
-            <div class="chips" data-name="access" data-options="Domain registrar|Hosting account|Current website admin|Google Analytics|Google Search Console|Google Business Profile|Social media accounts|None of these"></div>
+            <div class="chips" data-name="access" data-options="Domain registrar|Hosting account|Current website admin|Google Analytics|Google Search Console|Google Business Profile|Social media accounts|None of these" data-ockno-field="opportunity:access"></div>
           </fieldset>
           <fieldset class="field" data-label="Business email">
             <legend>Business email on your domain</legend>
-            <div class="chips" data-type="radio" data-name="email_setup" data-options="Google Workspace|Microsoft 365|Through our host|We use Gmail or similar|Not sure"></div>
+            <div class="chips" data-type="radio" data-name="email_setup" data-options="Google Workspace|Microsoft 365|Through our host|We use Gmail or similar|Not sure" data-ockno-field="opportunity:email_setup"></div>
           </fieldset>
           <div class="field" data-label="Search and tracking notes">
             <label for="seo">Search terms you want to be found for, or pages that already rank well</label>
             <p class="hint">When replacing a site we protect the pages that bring you traffic. Tell us about any you know of.</p>
-            <textarea id="seo" name="seo"></textarea>
+            <textarea id="seo" name="seo" data-ockno-field="opportunity:seo_notes"></textarea>
           </div>
         </div>
       </section>
@@ -603,7 +603,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{border-color:var
         <div class="review" id="review"></div>
         <div class="field notes-field" data-label="Anything else">
           <label for="notes">Anything else we should know?</label>
-          <textarea id="notes" name="notes"></textarea>
+          <textarea id="notes" name="notes" data-ockno-field="opportunity:additional_notes"></textarea>
         </div>
         <div class="banner" id="sendError" role="alert" hidden>
           <div><strong>That did not go through.</strong><p id="sendErrorText">Your answers are still here. Press Send brief to try again.</p></div>
@@ -948,27 +948,12 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{border-color:var
       if (!validate(steps[i])) { go(i, false); validate(steps[i]); return; }
     }
     if (form.elements.company_website_hp.value) return showDone();
-    if (!CONFIG.endpoint) {
-      console.error('Brief not sent: CONFIG.endpoint is empty. Payload that would have been sent:', buildPayload());
-      return showSendError('Submissions are not switched on yet. Your answers are still here.');
-    }
     nextBtn.classList.add('is-loading'); nextBtn.setAttribute('aria-busy', 'true');
     $('#sendError').hidden = true;
     try {
-      const res = await fetch(CONFIG.endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify(buildPayload()),
-        signal: AbortSignal.timeout?.(CONFIG.timeoutMs)
-      });
-      if (res.status === 429) return showSendError('Too many attempts in a short time. Wait a minute, then press Send brief again.');
-      if (res.status === 422) {
-        const { fields: bad = [] } = await res.json().catch(() => ({}));
-        const i = steps.findIndex(st => bad.some(name => st.querySelector(`[name="${name}"]`)));
-        if (i >= 0) { go(i, false); validate(steps[i]); return; }
-      }
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      showDone();
+      const res = await window.ockno.submit(form);
+      if (res.ok) { showDone(); return; }
+      showSendError('Your answers are still here. Check your connection and press Send brief to try again.');
     } catch (err) {
       console.error('Brief submission failed', err);
       showSendError('Your answers are still here. Check your connection and press Send brief to try again.');
@@ -990,5 +975,6 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{border-color:var
   paint();
 })();
 </script>
+<script src="https://dev-api.ockno.com/api/v1/page-assets/ockno-site.js" data-ockno-site="site_IiDr_XTjJKSztgi25iT_F0N-" defer></script>
 </body>
 </html>
